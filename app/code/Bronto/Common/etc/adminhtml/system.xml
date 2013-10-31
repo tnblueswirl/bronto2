@@ -13,7 +13,7 @@
             <group id="settings" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Settings</label>
                 <comment>Settings in this section apply accross all Bronto Extension modules.</comment>
-                <field id="active" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Extension</label>
                     <comment>Disabling this module will disable all Bronto Extension modules for this scope.</comment>
                     <source_model>Magento\Backend\Model\Config\Source\Yesno</source_model>
@@ -22,7 +22,7 @@
                     <label>API Token</label>
                     <comment><![CDATA[<strong style="color:red;">Warning!</strong> Changing your API Token will require you to reconfigure all Bronto modules and reimport your data.]]></comment>
                     <depends>
-                        <field id="active">1</field>
+                        <field id="enabled">1</field>
                     </depends>
                     <validate>required-entry validate-rangelength range-36-36</validate>
                     <!--<backend_model>Magento\Customer\Model\Config\Share</backend_model>-->
@@ -33,7 +33,7 @@
                     <comment><![CDATA[Allow the Bronto extension to write logs in <code>var/log.</code>]]></comment>
                     <source_model>Magento\Backend\Model\Config\Source\Enabledisable</source_model>
                     <depends>
-                        <field id="active">1</field>
+                        <field id="enabled">1</field>
                     </depends>
                 </field>
                 <field id="verbose" translate="label comment" type="select" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
@@ -41,7 +41,7 @@
                     <comment><![CDATA[If enabled, debug logs will also contain each API call.]]></comment>
                     <source_model>Magento\Backend\Model\Config\Source\Enabledisable</source_model>
                     <depends>
-                        <field id="active">1</field>
+                        <field id="enabled">1</field>
                         <field id="debug">1</field>
                     </depends>
                 </field>
@@ -50,7 +50,7 @@
                     <comment><![CDATA[Email sent with <a href="http://community.bronto.com/api/v4/objects/general/deliveryobject" target="_blank"><code>type=test</code></a> only to existing Contacts.]]></comment>
                     <source_model>Magento\Backend\Model\Config\Source\Enabledisable</source_model>
                     <depends>
-                        <field id="active">1</field>
+                        <field id="enabled">1</field>
                     </depends>
                 </field>
                 <field id="notices" translate="label comment" type="select" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
@@ -58,25 +58,48 @@
                     <comment><![CDATA[Show warnings/errors as site notices.<br /><strong>Note:</strong> Site notices may be customer-facing.]]></comment>
                     <source_model>Magento\Backend\Model\Config\Source\Enabledisable</source_model>
                     <depends>
-                        <field id="active">1</field>
+                        <field id="enabled">1</field>
                     </depends>
                 </field>
             </group>
-            <group id="registration" translate="label comment" type="text" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Settings</label>
-                <comment>Settings in this section apply accross all Bronto Extension modules.</comment>
+            <group id="registration" translate="label" type="text" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Registration</label>
                 <field id="site_name" translate="label comment" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Bronto Site Name</label>
-                    <comment><![CDATA[Found within Bronto, located at: <br /><strong>Home &raquo; Settings &raquo General Settings</strong>]]></comment>
+                    <comment><![CDATA[Found within <a href="http://app.bronto.com" target="_blank">Bronto</a>, located at: <br /><strong>Home &raquo; Settings &raquo General Settings</strong>]]></comment>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="firstname" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>First Name</label>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="lastname" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Last Name</label>
+                    <validate>required-entry</validate>
                 </field>
-                <field id="title" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="title" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Title</label>
+                    <validate>required-entry</validate>
+                </field>
+                <field id="email" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email</label>
+                    <validate>required-entry validate-email</validate>
+                </field>
+                <field id="phone" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Phone Number</label>
+                    <validate>required-entry validate-phone</validate>
+                </field>
+                <field id="using_solutions_partner" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Working with a Magento Solution Partner or Systems Integrator?</label>
+                    <source_model>Magento\Backend\Model\Config\Source\Yesno</source_model>
+                    <validate>required-entry validate-select</validate>
+                </field>
+                <field id="partner" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Name of Solution Partner or SI</label>
+                    <validate>required-entry</validate>
+                    <depends>
+                        <field id="using_solutions_partner">1</field>
+                    </depends>
                 </field>
             </group>
         </section>
