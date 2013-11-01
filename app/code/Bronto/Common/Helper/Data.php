@@ -9,6 +9,8 @@
  */
 namespace Bronto\Common\Helper;
 
+use Magento\Core\Model\Config\Cache\Exception;
+
 class Data extends \Magento\Core\Helper\Data
 {
 
@@ -36,10 +38,10 @@ class Data extends \Magento\Core\Helper\Data
      *
      * @var mixed
      */
-    protected $_scope;
-    protected $_scopeId;
-    protected $_scopeCode;
-    protected $_scopeObject;
+    protected $_scope       = false;
+    protected $_scopeId     = false;
+    protected $_scopeCode   = false;
+    protected $_scopeObject = false;
     /**#@-*/
 
     /**
@@ -64,6 +66,16 @@ class Data extends \Magento\Core\Helper\Data
     }
 
     /**
+     * Retrieve API Token from Config
+     *
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->getScopedConfig(self::XML_PATH_SETTINGS_TOKEN);
+    }
+
+    /**
      * Validate API Token
      *
      * @return bool
@@ -71,7 +83,7 @@ class Data extends \Magento\Core\Helper\Data
     public function isTokenValid()
     {
         // Get Token from Config
-        $token = $this->getScopedConfig(self::XML_PATH_SETTINGS_TOKEN);
+        $token = $this->getToken();
 
         // Check if token is set
         if (!$token || strlen($token) != 36 || !$this->validateToken()) {
@@ -79,6 +91,27 @@ class Data extends \Magento\Core\Helper\Data
         }
 
         return true;
+    }
+
+    /**
+     * Check if token can log in and has appropriate permissions
+     *
+     * @return bool
+     */
+    public function validateToken()
+    {
+        try {
+            /** @var \Bronto\Api $api */
+            $api = new \Bronto\Api($this->getToken(), array('debug' => true));
+            $api->login();
+
+            /** @var \Bronto\Api\ApiToken\Row $tokenRow */
+            $tokenRow = $api->getTokenInfo();
+        } catch (Exception $e) {
+            return false;
+        }
+
+        return (bool)$tokenRow->hasPermissions(7);
     }
 
     /**
@@ -117,6 +150,115 @@ class Data extends \Magento\Core\Helper\Data
         } else {
             $this->getCurrentScope();
         }
+
+        return $this;
+    }
+
+    /**
+     * Get the Scope
+     *
+     * @param bool $plural
+     *
+     * @return string
+     */
+    public function getScope($plural = false)
+    {
+        // If Scope is not defined, get the current scope
+        if (false === $this->_scope) {
+            $this->getCurrentScope();
+        }
+
+        // Clean Scope and Return
+        return $this->_cleanScope($plural)->_scope;
+    }
+
+    /**
+     * Get the Scope ID
+     *
+     * @return mixed
+     */
+    public function getScopeId()
+    {
+        if (false === $this->_scopeId) {
+            $this->getCurrentScope();
+        }
+
+        // return Scope ID
+        return $this->_scopeId;
+    }
+
+    /**
+     * Get the Scope Code
+     *
+     * @return mixed
+     */
+    public function getScopeCode()
+    {
+        if (false === $this->_scopeCode) {
+            $this->getCurrentScope();
+        }
+
+        // return Scope Code
+        return $this->_scopeCode;
+    }
+
+    /**
+     * @return bool|\Magento\Core\Model\Website
+     */
+    public function getScopeObject()
+    {
+        if (false === $this->getScope()) {
+            $this->getCurrentScope();
+        }
+
+        if ('default' == $this->getScope()) {
+            return false;
+        }
+
+        // Load Scope Object
+        if ('store' == $this->getScope()) {
+            $this->_scopeObject = $this->_storeManager->getStore($this->getScopeId());
+        } elseif ('website' == $this->getScope()) {
+            $this->_scopeObject = $this->_storeManager->getWebsite($this->getScopeId());
+        }
+
+        return $this->_scopeObject;
+    }
+
+    /**
+     * Handle pluralizing/singularizing scope as requested
+     *
+     * @param bool $plural
+     *
+     * @return $this
+     */
+    private function _cleanScope($plural = false)
+    {
+        if ($this->_scope != 'default') {
+            if ($plural && substr($this->_scope, -1) != 's') {
+                $this->_scope .= 's';
+            } elseif (!$plural && substr($this->_scope, -1) == 's') {
+                $this->_scope = substr($this->_scope, 0, strlen($this->_scope)-1);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets the Current Scope and sets the Helper scope params
+     *
+     * @return $this
+     */
+    public function getCurrentScope()
+    {
+        // Get Scope from Request
+        $this->_scope = $this->_request->getParam('store')
+            ? self::SCOPE_STORE
+            : ($this->_request->getParam('website') ? self::SCOPE_WEBSITE : self::SCOPE_DEFAULT);
+
+        // Set the Scope
+        $this->setScope($this->_scope, $this->_request->getParam($this->_scope));
 
         return $this;
     }
