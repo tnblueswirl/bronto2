@@ -24,7 +24,7 @@
                     <depends>
                         <field id="enabled">1</field>
                     </depends>
-                    <validate>required-entry validate-rangelength range-36-36</validate>
+                    <frontend_model>Bronto\Common\Block\System\Config\Form\Field\Apitoken</frontend_model>
                     <!--<backend_model>Magento\Customer\Model\Config\Share</backend_model>-->
                     <!--<source_model>Magento\Customer\Model\Config\Share</source_model>-->
                 </field>
