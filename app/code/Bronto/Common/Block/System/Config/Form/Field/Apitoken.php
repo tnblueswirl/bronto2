@@ -4,9 +4,15 @@ namespace Bronto\Common\Block\System\Config\Form\Field;
 
 class Apitoken extends \Magento\Backend\Block\System\Config\Form\Field
 {
+    /**
+     * @param \Magento\Data\Form\Element\AbstractElement $element
+     *
+     * @return string
+     */
     protected function _getElementHtml(\Magento\Data\Form\Element\AbstractElement $element)
     {
-
+        // Get Token Status Class
+        $class =
         $element->addClass('token-valid');
 
         $html = '';
@@ -22,6 +28,4 @@ class Apitoken extends \Magento\Backend\Block\System\Config\Form\Field
 
         return $html;
     }
-
-
 }

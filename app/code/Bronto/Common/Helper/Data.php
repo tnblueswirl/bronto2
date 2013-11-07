@@ -18,7 +18,6 @@ class Data extends \Magento\Core\Helper\Data
      * Constant variables to hold System Config value paths
      */
     const XML_PATH_SETTINGS_ENABLED = 'bronto_common/settings/enabled';
-    const XML_PATH_SETTINGS_TOKEN   = 'bronto_common/settings/token';
     const XML_PATH_SETTINGS_DEBUG   = 'bronto_common/settings/debug';
     const XML_PATH_SETTINGS_VERBOSE = 'bronto_common/settings/verbose';
     const XML_PATH_SETTINGS_TEST    = 'bronto_common/settings/test';
@@ -44,6 +43,52 @@ class Data extends \Magento\Core\Helper\Data
     protected $_scopeObject = false;
     /**#@-*/
 
+    protected $_moduleManager;
+
+    /**
+     * @param \Magento\Core\Model\ModuleManager $moduleManager
+     * @param \Magento\Core\Helper\Context $context
+     * @param \Magento\Event\ManagerInterface $eventManager
+     * @param \Magento\Core\Helper\Http $coreHttp
+     * @param \Magento\Core\Model\Config $config
+     * @param \Magento\Core\Model\Store\Config $coreStoreConfig
+     * @param \Magento\Core\Model\StoreManager $storeManager
+     * @param \Magento\Core\Model\Locale $locale
+     * @param \Magento\Core\Model\Date $dateModel
+     * @param \Magento\App\State $appState
+     * @param \Magento\Core\Model\Encryption $encryptor
+     * @param bool $dbCompatibleMode
+     */
+    public function __construct(
+        \Magento\Core\Model\ModuleManager $moduleManager,
+        \Magento\Core\Helper\Context $context,
+        \Magento\Event\ManagerInterface $eventManager,
+        \Magento\Core\Helper\Http $coreHttp,
+        \Magento\Core\Model\Config $config,
+        \Magento\Core\Model\Store\Config $coreStoreConfig,
+        \Magento\Core\Model\StoreManager $storeManager,
+        \Magento\Core\Model\Locale $locale,
+        \Magento\Core\Model\Date $dateModel,
+        \Magento\App\State $appState,
+        \Magento\Core\Model\Encryption $encryptor,
+        $dbCompatibleMode = true
+    ) {
+        $this->_moduleManager = $moduleManager;
+        parent::__construct(
+            $context,
+            $eventManager,
+            $coreHttp,
+            $config,
+            $coreStoreConfig,
+            $storeManager,
+            $locale,
+            $dateModel,
+            $appState,
+            $encryptor,
+            $dbCompatibleMode
+        );
+    }
+
     /**
      * Get if Module is Enabled
      *
@@ -52,66 +97,12 @@ class Data extends \Magento\Core\Helper\Data
     public function isEnabled()
     {
         // If module is disabled or output is disabled, return false
-        if (!\Magento\Core\Model\ModuleManager::isEnabled($this->_getModuleName()) || !\Magento\Core\Model\ModuleManager::isOutputEnabled($this->_getModuleName())) {
-            return false;
-        }
-
-        // If API Token is not present or is not valid, return false
-        if (!$this->isTokenValid()) {
+        if (!$this->_moduleManager->isEnabled($this->_getModuleName()) || !$this->_moduleManager->isOutputEnabled($this->_getModuleName())) {
             return false;
         }
 
         // Return Boolean Value of enabled config value
         return (bool) $this->getScopedConfig(self::XML_PATH_SETTINGS_ENABLED);
-    }
-
-    /**
-     * Retrieve API Token from Config
-     *
-     * @return mixed
-     */
-    public function getToken()
-    {
-        return $this->getScopedConfig(self::XML_PATH_SETTINGS_TOKEN);
-    }
-
-    /**
-     * Validate API Token
-     *
-     * @return bool
-     */
-    public function isTokenValid()
-    {
-        // Get Token from Config
-        $token = $this->getToken();
-
-        // Check if token is set
-        if (!$token || strlen($token) != 36 || !$this->validateToken()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if token can log in and has appropriate permissions
-     *
-     * @return bool
-     */
-    public function validateToken()
-    {
-        try {
-            /** @var \Bronto\Api $api */
-            $api = new \Bronto\Api($this->getToken(), array('debug' => true));
-            $api->login();
-
-            /** @var \Bronto\Api\ApiToken\Row $tokenRow */
-            $tokenRow = $api->getTokenInfo();
-        } catch (Exception $e) {
-            return false;
-        }
-
-        return (bool)$tokenRow->hasPermissions(7);
     }
 
     /**
