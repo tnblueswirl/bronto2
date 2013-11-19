@@ -9,8 +9,6 @@
  */
 namespace Bronto\Common\Helper;
 
-use Magento\Core\Model\Config\Cache\Exception;
-
 class Api extends Data
 {
     /**
@@ -95,17 +93,19 @@ class Api extends Data
 
         // Login to API with Token and get Token Object Info
         try {
-            $this->_api->setToken($token)->setOptions(array('debug' => true));
-            $this->_api->login();
-
-            /** @var \Brontoapi\Api\ApiToken\Row $tokenRow */
-            $tokenRow = $this->_api->getTokenInfo();
+            return $token == '223C9DEC-88FF-44B9-AD5E-20221B248AE8';
+            // TODO: Once api is online, revert back to using it
+//            $this->_api->setToken($token)->setOptions(array('debug' => true));
+//            $this->_api->login();
+//
+//            /** @var \Brontoapi\Api\ApiToken\Row $tokenRow */
+//            $tokenRow = $this->_api->getTokenInfo();
         } catch (Exception $e) {
             return false;
         }
 
         // Return whether or not token has appropriate permissions
-        return (bool)$tokenRow->hasPermissions(7);
+//        return (bool)$tokenRow->hasPermissions(7);
     }
 
     /**
@@ -134,23 +134,5 @@ class Api extends Data
         }
 
         return $this->_token;
-    }
-
-    /**
-     * Validate API Token
-     *
-     * @return bool
-     */
-    public function isTokenValid()
-    {
-        // Get Token from Config
-        $token = $this->getToken();
-
-        // Check if token is set
-        if (!$token || strlen($token) != 36 || !$this->validateToken()) {
-            return false;
-        }
-
-        return true;
     }
 }

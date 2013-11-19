@@ -1,5 +1,13 @@
 <?xml version="1.0"?>
-
+<!--
+/**
+ * Bronto Common General Settings Form
+ *
+ * @category    Bronto2
+ * @package     Bronto_Common
+ * @author      Adam Daniels <adam.daniels@atlanticbt.com>
+ */
+-->
 <config>
     <system>
         <tab id="bronto" translate="label" sortOrder="900">
@@ -16,7 +24,7 @@
                 <field id="enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Extension</label>
                     <comment>Disabling this module will disable all Bronto Extension modules for this scope.</comment>
-                    <source_model>Magento\Backend\Model\Config\Source\Yesno</source_model>
+                    <source_model>Magento\Backend\Model\Config\Source\Enabledisable</source_model>
                 </field>
                 <field id="token" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>API Token</label>
@@ -24,9 +32,8 @@
                     <depends>
                         <field id="enabled">1</field>
                     </depends>
-                    <frontend_model>Bronto\Common\Block\System\Config\Form\Field\Apitoken</frontend_model>
-                    <!--<backend_model>Magento\Customer\Model\Config\Share</backend_model>-->
-                    <!--<source_model>Magento\Customer\Model\Config\Share</source_model>-->
+                    <frontend_model>Bronto\Common\Block\Config\Form\Field\Apitoken</frontend_model>
+                    <backend_model>Bronto\Common\Model\Config\Apitoken</backend_model>
                 </field>
                 <field id="debug" translate="label comment" type="select" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Debug</label>
