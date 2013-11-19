@@ -19,15 +19,9 @@ class Api extends Data
     /**
      * @var
      */
-//    protected $_api;
-
-    /**
-     * @var
-     */
     protected $_token;
 
     /**
-     * @ param \Brontoapi\Api $api
      * @param \Magento\Core\Model\ModuleManager $moduleManager
      * @param \Magento\Core\Helper\Context $context
      * @param \Magento\Event\ManagerInterface $eventManager
@@ -42,7 +36,6 @@ class Api extends Data
      * @param bool $dbCompatibleMode
      */
     public function __construct(
-//        \Brontoapi\Api $api,
         \Magento\Core\Model\ModuleManager $moduleManager,
         \Magento\Core\Helper\Context $context,
         \Magento\Event\ManagerInterface $eventManager,
@@ -56,7 +49,6 @@ class Api extends Data
         \Magento\Core\Model\Encryption $encryptor,
         $dbCompatibleMode = true
     ) {
-//        $this->_api = $api;
         parent::__construct(
             $moduleManager,
             $context,
@@ -93,19 +85,17 @@ class Api extends Data
 
         // Login to API with Token and get Token Object Info
         try {
-            return $token == '223C9DEC-88FF-44B9-AD5E-20221B248AE8';
-            // TODO: Once api is online, revert back to using it
-//            $this->_api->setToken($token)->setOptions(array('debug' => true));
-//            $this->_api->login();
-//
-//            /** @var \Brontoapi\Api\ApiToken\Row $tokenRow */
-//            $tokenRow = $this->_api->getTokenInfo();
-        } catch (Exception $e) {
+            $api = new \Bronto\Api($token, array('debug' => true));
+            $api->login();
+
+            /** @var \Bronto\Api\ApiToken\Row $tokenRow */
+            $tokenRow = $api->getTokenInfo();
+        } catch (\Exception $e) {
             return false;
         }
 
         // Return whether or not token has appropriate permissions
-//        return (bool)$tokenRow->hasPermissions(7);
+        return (bool)$tokenRow->hasPermissions(7);
     }
 
     /**

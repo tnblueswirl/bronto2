@@ -37,7 +37,7 @@ class Apitoken extends \Magento\Backend\Controller\AbstractAction
     {
         // Set Default Result Value
         $result = 'Token is Invalid.  Must be 36 characters and should only contain alpha-numeric and - characters.' .
-                  'Please get your token from <a href="http://app.bronto.com">http://app.bronto.com</a>.';
+                  '  Please get your token from <a href="http://app.bronto.com">http://app.bronto.com</a>.';
 
         // Get Token Value and perform Validation
         try {
@@ -51,7 +51,7 @@ class Apitoken extends \Magento\Backend\Controller\AbstractAction
                     $result = 'true';
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $result = $e->getMessage();
         }
 
