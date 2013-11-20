@@ -18,9 +18,12 @@
             <label>General Settings</label>
             <tab>bronto</tab>
             <resource>Bronto_Common::bronto_common</resource>
+            <group id="about" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                <frontend_model>Bronto\Common\Block\Config\Form\Fieldset\About</frontend_model>
+            </group>
             <group id="settings" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Settings</label>
-                <comment>Settings in this section apply accross all Bronto Extension modules.</comment>
+                <comment>Settings in this section apply across all Bronto Extension modules.</comment>
                 <field id="enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable Extension</label>
                     <comment>Disabling this module will disable all Bronto Extension modules for this scope.</comment>
@@ -69,8 +72,9 @@
                     </depends>
                 </field>
             </group>
-            <group id="registration" translate="label" type="text" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="registration" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Registration</label>
+                <comment><![CDATA[You must register your instance of the Bronto Extension for Magento in order for it to be enabled.]]></comment>
                 <field id="site_name" translate="label comment" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Bronto Site Name</label>
                     <comment><![CDATA[Found within <a href="http://app.bronto.com" target="_blank">Bronto</a>, located at: <br /><strong>Home &raquo; Settings &raquo General Settings</strong>]]></comment>
@@ -107,6 +111,54 @@
                     <depends>
                         <field id="using_solutions_partner">1</field>
                     </depends>
+                </field>
+            </group>
+            <group id="format" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Formatting Options</label>
+                <comment><![CDATA[These formatting options apply to product images and any price variables within Reminder Emails. Leave image width or height blank to resize according to aspect ratio. Leave both width and height blank to use the full image size. You can always set width and height values within the HTML of your message too.<br /><br /><strong style="color:red">Warning!</strong> Changing any formatting options will immediately affect future emails. Make sure your corresponding messages are ready to accept the newly formatted content.]]></comment>
+                <field id="image_type" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Image Type</label>
+                    <comment>The product image to use.</comment>
+                    <source_model>Bronto\Common\Model\Config\Source\ImageType</source_model>
+                    <validate>required-entry validate-select</validate>
+                </field>
+                <field id="image_width" translate="label comment" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Image Width</label>
+                    <comment>Product image width in pixels.</comment>
+                    <validate>required-entry validate-number</validate>
+                </field>
+                <field id="image_height" translate="label comment" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Image Width</label>
+                    <comment>Product image height in pixels.</comment>
+                    <validate>required-entry validate-number</validate>
+                </field>
+                <field id="use_symbol" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Include Currency Symbol</label>
+                    <comment><![CDATA[Pass Default Display Currency symbol into email.<br/><strong>General &raquo; Currency Setup &raquo; Default Display Currency</strong>]]></comment>
+                    <source_model>Magento\Backend\Model\Config\Source\Yesno</source_model>
+                    <validate>required-entry validate-select</validate>
+                </field>
+                <field id="incl_tax" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Include Tax in Reminder Emails</label>
+                    <comment><![CDATA[Should the prices displayed in Reminder Emails include tax?]]></comment>
+                    <source_model>Magento\Backend\Model\Config\Source\Yesno</source_model>
+                    <validate>required-entry validate-select</validate>
+                </field>
+                <field id="default_greeting" translate="label comment" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Greeting</label>
+                    <comment><![CDATA[If User does not have a Full Name set for their account, this value will be used in the reminder email<br/><em>Note: Will be used if your Bronto Message uses %#customerName%.</em>]]></comment>
+                </field>
+                <field id="default_greeting_prefix" translate="label comment" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Greeting Prefix</label>
+                    <comment><![CDATA[If User does not have a Prefix set for their account, this value will be used in the reminder email<br /><em>Note: Will be used if your Bronto Message uses %#prefix%.</em>]]></comment>
+                </field>
+                <field id="default_greeting_firstname" translate="label comment" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Greeting First Name</label>
+                    <comment><![CDATA[If User does not have a First Name set for their account, this value will be used in the reminder email<br /><em>Note: Will be used if your Bronto Message uses %#firstName%.</em>]]></comment>
+                </field>
+                <field id="default_greeting_lastname" translate="label comment" type="text" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Greeting Last Name</label>
+                    <comment><![CDATA[If User does not have a Last Name set for their account, this value will be used in the reminder email<br /><em>Note: Will be used if your Bronto Message uses %#lastName%.</em>]]></comment>
                 </field>
             </group>
         </section>
